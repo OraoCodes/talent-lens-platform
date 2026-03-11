@@ -78,7 +78,13 @@ export function useDashboardStats() {
         ]);
 
         const hiredApplications = (applicationsRes.data || []).filter(
-          app => app.pipeline_stages?.is_terminal === true
+          (app: any) => {
+            const stages = app.pipeline_stages;
+            if (Array.isArray(stages) && stages.length > 0) {
+              return stages[0].is_terminal === true;
+            }
+            return false;
+          }
         );
         
         const avgTimeToHire = hiredApplications.length > 0
