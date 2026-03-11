@@ -1,20 +1,17 @@
 import React from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   LayoutDashboard, 
   Users, 
-  Briefcase, 
   Settings, 
   Bell, 
   Search, 
   TrendingUp, 
-  Activity, 
-  Zap, 
-  Globe, 
-  Share2, 
   LogOut,
   ChevronRight,
   Menu,
-  X
+  X,
+  Building2
 } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -42,20 +39,25 @@ const SidebarItem = ({ icon: Icon, label, active, onClick }: SidebarItemProps) =
   </button>
 );
 
-export function DashboardShell({ children, activeTab, onTabChange }: { children: React.ReactNode, activeTab: string, onTabChange: (id: string) => void }) {
+export function DashboardShell({ children }: { children: React.ReactNode }) {
+  const navigate = useNavigate();
+  const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
 
   const navigation = [
-    { id: 'overview', label: 'Overview', icon: LayoutDashboard },
-    { id: 'growth', label: 'Growth & Adoption', icon: TrendingUp },
-    { id: 'recruitment', label: 'Recruitment Activity', icon: Briefcase },
-    { id: 'pipeline', label: 'Pipeline Health', icon: Activity },
-    { id: 'ai', label: 'AI Features', icon: Zap },
-    { id: 'integrations', label: 'Integrations', icon: Share2 },
-    { id: 'engagement', label: 'Engagement', icon: Users },
-    { id: 'jobboard', label: 'Job Boards', icon: Globe },
+    { id: 'overview', label: 'Overview', icon: LayoutDashboard, path: '/overview' },
+    { id: 'workspaces', label: 'Workspaces', icon: Building2, path: '/workspaces' },
+    { id: 'growth', label: 'Growth & Adoption', icon: TrendingUp, path: '/growth' },
+    { id: 'engagement', label: 'Active Users', icon: Users, path: '/engagement' },
   ];
+
+  const isActive = (path: string) => {
+    if (path === '/workspaces') {
+      return location.pathname.startsWith('/workspaces');
+    }
+    return location.pathname === path;
+  };
 
   return (
     <div className="flex min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
@@ -65,11 +67,13 @@ export function DashboardShell({ children, activeTab, onTabChange }: { children:
         isSidebarOpen ? "w-64" : "w-20"
       )}>
         <div className="p-6 flex items-center justify-between">
-          <div className={cn("flex items-center gap-2 transition-opacity duration-300", !isSidebarOpen && "hidden")}>
-            <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
-              <Zap className="text-white w-5 h-5" />
-            </div>
-            <span className="font-bold text-xl tracking-tight">RecruitAI</span>
+          <div className={cn("flex items-center gap-3 transition-opacity duration-300", !isSidebarOpen && "hidden")}>
+            <img 
+              src="/Bael.a1 (1).png" 
+              alt="Bael Admin" 
+              className="h-8 w-auto"
+            />
+            <span className="font-bold text-xl tracking-tight">Bael Admin</span>
           </div>
           <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded">
             <Menu className="w-5 h-5 text-slate-500" />
@@ -82,8 +86,8 @@ export function DashboardShell({ children, activeTab, onTabChange }: { children:
               key={item.id}
               icon={item.icon}
               label={isSidebarOpen ? item.label : ""}
-              active={activeTab === item.id}
-              onClick={() => onTabChange(item.id)}
+              active={isActive(item.path)}
+              onClick={() => navigate(item.path)}
             />
           ))}
         </nav>
@@ -104,11 +108,13 @@ export function DashboardShell({ children, activeTab, onTabChange }: { children:
             className="fixed inset-0 z-50 md:hidden bg-white dark:bg-slate-900 p-6"
           >
             <div className="flex justify-between items-center mb-8">
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
-                  <Zap className="text-white w-5 h-5" />
-                </div>
-                <span className="font-bold text-xl">RecruitAI</span>
+              <div className="flex items-center gap-3">
+                <img 
+                  src="/Bael.a1 (1).png" 
+                  alt="Bael Admin" 
+                  className="h-8 w-auto"
+                />
+                <span className="font-bold text-xl tracking-tight">Bael Admin</span>
               </div>
               <button onClick={() => setIsMobileMenuOpen(false)}>
                 <X className="w-6 h-6" />
@@ -119,12 +125,12 @@ export function DashboardShell({ children, activeTab, onTabChange }: { children:
                 <button
                   key={item.id}
                   onClick={() => {
-                    onTabChange(item.id);
+                    navigate(item.path);
                     setIsMobileMenuOpen(false);
                   }}
                   className={cn(
                     "flex items-center w-full p-4 rounded-xl text-lg font-medium",
-                    activeTab === item.id ? "bg-indigo-50 text-indigo-700" : "text-slate-600"
+                    isActive(item.path) ? "bg-indigo-50 text-indigo-700 dark:bg-indigo-950/30 dark:text-indigo-400" : "text-slate-600 dark:text-slate-400"
                   )}
                 >
                   <item.icon className="w-6 h-6 mr-4" />

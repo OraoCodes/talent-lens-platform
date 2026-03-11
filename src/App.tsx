@@ -1,44 +1,30 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { DashboardShell } from './components/layout/DashboardShell';
 import { Overview } from './components/dashboard/Overview';
 import { GrowthSection } from './components/dashboard/GrowthSection';
-import { RecruitmentSection } from './components/dashboard/RecruitmentSection';
-import { PipelineSection } from './components/dashboard/PipelineSection';
-import { AISection } from './components/dashboard/AISection';
-import { IntegrationsSection } from './components/dashboard/IntegrationsSection';
 import { EngagementSection } from './components/dashboard/EngagementSection';
-import { JobBoardSection } from './components/dashboard/JobBoardSection';
-import { Filters } from './components/dashboard/Filters';
+import { WorkspacesList } from './components/workspaces/WorkspacesList';
+import { WorkspaceDetails } from './components/workspaces/WorkspaceDetails';
 import { Toaster } from 'sonner';
 
 function App() {
-  const [activeTab, setActiveTab] = useState('overview');
-
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'overview': return <Overview />;
-      case 'growth': return <GrowthSection />;
-      case 'recruitment': return <RecruitmentSection />;
-      case 'pipeline': return <PipelineSection />;
-      case 'ai': return <AISection />;
-      case 'integrations': return <IntegrationsSection />;
-      case 'engagement': return <EngagementSection />;
-      case 'jobboard': return <JobBoardSection />;
-      default: return <Overview />;
-    }
-  };
-
   return (
-    <DashboardShell activeTab={activeTab} onTabChange={setActiveTab}>
-      <Toaster position="top-right" expand={true} richColors />
-      <div className="max-w-7xl mx-auto">
-        <Filters 
-          onWorkspaceChange={(val) => console.log('Workspace:', val)}
-          onTimeRangeChange={(val) => console.log('Range:', val)}
-        />
-        {renderContent()}
-      </div>
-    </DashboardShell>
+    <BrowserRouter>
+      <DashboardShell>
+        <Toaster position="top-right" expand={true} richColors />
+        <div className="max-w-7xl mx-auto">
+          <Routes>
+            <Route path="/" element={<Navigate to="/overview" replace />} />
+            <Route path="/overview" element={<Overview />} />
+            <Route path="/workspaces" element={<WorkspacesList />} />
+            <Route path="/workspaces/:workspaceId" element={<WorkspaceDetails />} />
+            <Route path="/growth" element={<GrowthSection />} />
+            <Route path="/engagement" element={<EngagementSection />} />
+          </Routes>
+        </div>
+      </DashboardShell>
+    </BrowserRouter>
   );
 }
 

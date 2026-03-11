@@ -10,9 +10,11 @@ interface StatCardProps {
   icon: LucideIcon;
   color?: 'indigo' | 'emerald' | 'amber' | 'rose' | 'slate';
   description?: string;
+  onClick?: () => void;
+  clickable?: boolean;
 }
 
-export function StatCard({ title, value, trend, trendLabel, icon: Icon, color = 'indigo', description }: StatCardProps) {
+export function StatCard({ title, value, trend, trendLabel, icon: Icon, color = 'indigo', description, onClick, clickable = false }: StatCardProps) {
   const colorMap = {
     indigo: "bg-indigo-50 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-400",
     emerald: "bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400",
@@ -25,7 +27,11 @@ export function StatCard({ title, value, trend, trendLabel, icon: Icon, color = 
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm"
+      onClick={onClick}
+      className={cn(
+        "p-6 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm",
+        (clickable || onClick) && "cursor-pointer hover:shadow-md hover:border-indigo-300 dark:hover:border-indigo-700 transition-all duration-200"
+      )}
     >
       <div className="flex items-start justify-between">
         <div>
